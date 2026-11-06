@@ -6,8 +6,8 @@ project(excel-to-sql VERSION 0.0.1 DESCRIPTION "")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Подключаем наш файл (расширение .cmake писать не обязательно)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompilerSettings.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Dependencies.cmake)
+include(CompilerSettings)
+include(Dependencies)
 
 # Создаём исполняемый файл
 add_executable(${PROJECT_NAME} src/main.cpp src/utils.cpp src/parser.cpp)
@@ -15,8 +15,11 @@ add_executable(${PROJECT_NAME} src/main.cpp src/utils.cpp src/parser.cpp)
 # Линкуем все зависимости для нашей библиотеки
 target_link_all_dependencies(${PROJECT_NAME})
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompilerSettings.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPackConfig.cmake)
+# Установка сервиса
+include(InstallService)
+
+# Упаковка сервиса
+include(CPackConfig)
 
 # Определение макросов с дополнительной информацией
 target_compile_definitions(${PROJECT_NAME} PUBLIC

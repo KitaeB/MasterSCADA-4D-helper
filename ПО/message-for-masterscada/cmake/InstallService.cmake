@@ -13,7 +13,9 @@ set(CONFIG_DIR "config" CACHE STRING "Путь для хранения конф�
 
 # Упаковка пакетов
 install(TARGETS ${PROJECT_NAME} RUNTIME_DEPENDENCIES
-    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*" "filin-srv-lib.*"
+    # Явно передаем найденные директории vcpkg
+    DIRECTORIES ${DEPENDENCY_BIN_DIRS}
+    PRE_EXCLUDE_REGEXES "api-ms-.*" "ext-ms-.*"
     POST_EXCLUDE_REGEXES ".*system32/.*" "^/lib" "^/usr/lib"
     DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime
 )

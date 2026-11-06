@@ -13,12 +13,11 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
-
+        "CMAKE_POLICY_VERSION_MINIMUM": "3.5",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-
-        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_CXX_STANDARD": "20",
         "CMAKE_CXX_STANDARD_REQUIRED": "ON",
         "CMAKE_BUILD_TYPE": "Release"
       }
@@ -26,22 +25,24 @@
     {
       "name": "windows",
       "displayName": "Windows",
-      "description": "Сборка для Windows с использованием зависимостей vcpkg",
+      "description": "Сборка для Windows с автоматическим скачиванием зависимостей",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
+        "CMAKE_POLICY_VERSION_MINIMUM": "3.5",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
-
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-
-        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_CXX_STANDARD": "20",
         "CMAKE_CXX_STANDARD_REQUIRED": "ON",
         "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_CXX_FLAGS": "-D_CRT_SECURE_NO_WARNINGS",
-        "CMAKE_C_FLAGS": "-D_CRT_SECURE_NO_WARNINGS"
+        "CMAKE_CXX_FLAGS": "-D_CRT_SECURE_NO_WARNINGS ",
+        "CMAKE_C_FLAGS": "-D_CRT_SECURE_NO_WARNINGS",
+
+        "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/build/bin",
+        "CMAKE_LIBRARY_OUTPUT_DIRECTORY": "${sourceDir}/build/lib",
+        "CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "${sourceDir}/build/lib"
       }
     }
   ]
