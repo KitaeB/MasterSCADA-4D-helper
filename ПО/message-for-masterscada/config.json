@@ -1,0 +1,81 @@
+{
+    "path": "Таблица сигналов_v1.xlsm",
+    "node_id": 0,
+    "node_name": "СИКНП",
+    "object": {
+        "DI": {
+            "sheet": "DI",
+            "start_row": 2,
+            "has_tech": true,
+            "struct_id": 5,
+            "object_id_column": 6,
+            "tech_name_column": 2,
+            "name_column": 3
+        },
+        "AI": {
+            "sheet": "AI",
+            "start_row": 2,
+            "has_tech": true,
+            "struct_id": 4,
+            "object_id_column": 6,
+            "tech_name_column": 2,
+            "name_column": 3
+        },
+        "DO": {
+            "sheet": "DO",
+            "start_row": 2,
+            "has_tech": true,
+            "struct_id": 8,
+            "object_id_column": 6,
+            "tech_name_column": 2,
+            "name_column": 3
+        },
+        "AO": {
+            "sheet": "AO",
+            "start_row": 2,
+            "has_tech": true,
+            "struct_id": 7,
+            "object_id_column": 6,
+            "tech_name_column": 2,
+            "name_column": 3
+        },
+        "Protect": {
+            "sheet": "Protect",
+            "start_row": 2,
+            "has_tech": false,
+            "struct_id": 3,
+            "object_id_column": 3,
+            "tech_name_column": 2,
+            "name_column": 2
+        },
+        "VS": {
+            "sheet": "VS",
+            "start_row": 2,
+            "has_tech": false,
+            "struct_id": 1,
+            "object_id_column": 3,
+            "tech_name_column": 2,
+            "name_column": 2
+        },
+        "ZD": {
+            "sheet": "ZD",
+            "start_row": 2,
+            "has_tech": false,
+            "struct_id": 2,
+            "object_id_column": 3,
+            "tech_name_column": 2,
+            "name_column": 2
+        },
+        "PID": {
+            "sheet": "PID",
+            "start_row": 2,
+            "has_tech": false,
+            "struct_id": 6,
+            "object_id_column": 3,
+            "tech_name_column": 2,
+            "name_column": 2
+        }
+    },
+    "histor_sheet": "Histor",
+    "histor_row": 15
+}

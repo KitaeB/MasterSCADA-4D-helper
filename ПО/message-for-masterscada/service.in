@@ -1,0 +1,26 @@
+[Unit]
+Description=@PROJECT_DESCRIPTION@
+After=network.target
+
+[Service]
+type=simple
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/@PROJECT_NAME@
+Restart=on-failure
+
+# Пользователь будет создаваться динамический при запуске демона
+DynamicUser=yes
+
+# systemd автоматически создаст директории и выдаст права
+LogsDirectory=@PROJECT_NAME@
+StateDirectory=@PROJECT_NAME@
+ConfigurationDirectory=@PROJECT_NAME@
+
+# Даёт доступ на чтение файлов из системы
+ProtectSystem=strict
+# Запрещает доступ к домашнему каталогу
+ProtectHome=yes
+# Под временные файлы будет делать создавать изолированную область
+PrivateTmp=yes
+
+[Install]
+WantedBy=muiltu-user.target

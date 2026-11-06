@@ -1,0 +1,58 @@
+# ==========================================
+# Этап 1: Сборка (Builder)
+# ==========================================
+FROM ubuntu:22.04 AS builder
+
+# Отключаем интерактивные запросы tzdata при установке пакетов
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Устанавливаем базовые инструменты сборки и зависимости
+# Если spdlog, json или crow скачиваются через FetchContent в CMake, 
+# их системные пакеты здесь можно убрать.
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    \
+    && rm -rf /var/lib/apt/lists/*
+
+# Задаем рабочую директорию
+WORKDIR /app
+
+# Копируем исходный код проекта
+COPY . .
+
+# Создаем директорию сборки, конфигурируем и собираем проект
+RUN mkdir build && cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j$(nproc)
+
+# ==========================================
+# Этап 2: Выполнение (Runtime)
+# ==========================================
+FROM ubuntu:22.04
+
+# Устанавливаем только необходимые runtime-библиотеки (libmodbus)
+RUN apt-get update && apt-get install -y \
+    libmodbus5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Создаем системного пользователя без прав root (хорошая практика безопасности)
+RUN useradd -m appuser
+WORKDIR /app
+
+# Создаем директории для конфигураций и логов, выдаем права
+RUN mkdir -p /config /logs && chown appuser:appuser /config /logs
+
+# Копируем собранный бинарник из первого этапа
+# ВНИМАНИЕ: Замените 'App' на имя вашего исполняемого файла из CMakeLists.txt
+COPY --from=builder --chown=appuser:appuser /app/build/App /app/App
+
+# Переключаемся на непривилегированного пользователя
+USER appuser
+
+# Объявляем тома (volumes) для сохранения данных при пересоздании контейнера
+VOLUME ["/config", "/log"]
+
+# Запускаем сервис
+CMD ["./App"]

@@ -1,0 +1,2 @@
+# cmake/CompilerSettings.cmake
+
