@@ -1,7 +1,8 @@
 #include "Parser.hpp"
 #include "Utils.hpp"
 
-void parseMessages(OpenXLSX::XLWorksheet& worksheet, uint32_t startRow, std::ostream& sqlOut) {
+void parseMessages(OpenXLSX::XLWorksheet& worksheet, const std::string& messageTableName, uint32_t startRow,
+                   std::ostream& sqlOut) {
     // -- Парсинг сообщений из Excel листа --
     int currentStructId = -1;
     const int groupsCount = 4;  // Ограничение по количеству проверяемых колонок-групп
@@ -35,8 +36,9 @@ void parseMessages(OpenXLSX::XLWorksheet& worksheet, uint32_t startRow, std::ost
 
             // -- Пропуск строк с пустым идентификатором сообщения или текстом --
             if (isCellEmpty(cellMsgId) || isCellEmpty(cellMsg)) {
-                std::cerr << "Предупреждение: Пустой идентификатор сообщения или текст в строке " << r << ", колонка "
-                          << colMsgId << ". Пропуск.\n";
+                std::cerr << "Предупреждение: Пустой идентификатор сообщения или текст "
+                             "в строке "
+                          << r << ", колонка " << colMsgId << ". Пропуск.\n";
                 continue;
             }
 
@@ -48,7 +50,8 @@ void parseMessages(OpenXLSX::XLWorksheet& worksheet, uint32_t startRow, std::ost
                     continue;
                 }
 
-                // -- Чтение приоритета сообщения, если он указан, иначе используем дефолтный приоритет 3 --
+                // -- Чтение приоритета сообщения, если он указан, иначе используем
+                // дефолтный приоритет 3 --
                 int priority = 3;
                 if (!isCellEmpty(cellPriority)) {
                     try {
@@ -60,7 +63,7 @@ void parseMessages(OpenXLSX::XLWorksheet& worksheet, uint32_t startRow, std::ost
                 }
 
                 // -- Запись SQL запроса на вставку или обновление сообщения --
-                sqlOut << "INSERT INTO public.message_table (struct_id, message_id, priority, message) "
+                sqlOut << "INSERT INTO public." << messageTableName << " (struct_id, message_id, priority, message) "
                        << "VALUES (" << currentStructId << ", " << messageId << ", " << priority << ", '"
                        << escapeSql(messageStr) << "')\n"
                        << "ON CONFLICT (struct_id, message_id) DO UPDATE SET "
@@ -75,9 +78,9 @@ void parseMessages(OpenXLSX::XLWorksheet& worksheet, uint32_t startRow, std::ost
 }
 
 // -- Парсинг объектов из Excel листа --
-void parseObjects(OpenXLSX::XLWorksheet& worksheet, uint32_t startRow, int nodeId, const std::string& nodeNameFallback,
-                  int structId, bool hasTech, uint32_t objectIdColumn, uint32_t techNameColumn, uint32_t nameColumn,
-                  std::ostream& sqlOut) {
+void parseObjects(OpenXLSX::XLWorksheet& worksheet, const std::string& objectTableName, uint32_t startRow, int nodeId,
+                  const std::string& nodeNameFallback, int structId, bool hasTech, uint32_t objectIdColumn,
+                  uint32_t techNameColumn, uint32_t nameColumn, std::ostream& sqlOut) {
     const uint32_t nodeNameColumn = 4;
 
     // -- Парсинг объектов из Excel листа --
@@ -95,7 +98,8 @@ void parseObjects(OpenXLSX::XLWorksheet& worksheet, uint32_t startRow, int nodeI
             auto objectId = getIntValue(cellId.value());
             std::string objectName = getStringValue(cellName.value());
 
-            // -- Если node_name был считан из JSON, используем его. Иначе берем из таблицы --
+            // -- Если node_name был считан из JSON, используем его. Иначе берем из
+            // таблицы --
             std::string nodeName = nodeNameFallback;
             if (nodeName.empty()) {
                 auto cellNodeName = worksheet.cell(r, static_cast<uint16_t>(nodeNameColumn));
@@ -112,13 +116,13 @@ void parseObjects(OpenXLSX::XLWorksheet& worksheet, uint32_t startRow, int nodeI
             }
 
             // -- Запись SQL запроса на вставку или обновление объекта --
-            sqlOut
-                << "INSERT INTO public.object_table (struct_id, object_id, object_tech, object_name, nodeid, nodename) "
-                << "VALUES (" << structId << ", " << objectId << ", '" << escapeSql(objectTech) << "', '"
-                << escapeSql(objectName) << "', " << nodeId << ", '" << escapeSql(nodeName) << "')\n"
-                << "ON CONFLICT (struct_id, object_id) DO UPDATE SET "
-                << "object_tech = EXCLUDED.object_tech, object_name = EXCLUDED.object_name, "
-                << "nodeid = EXCLUDED.nodeid, nodename = EXCLUDED.nodename;\n";
+            sqlOut << "INSERT INTO public." << objectTableName
+                   << " (struct_id, object_id, object_tech, object_name, nodeid, nodename) "
+                   << "VALUES (" << structId << ", " << objectId << ", '" << escapeSql(objectTech) << "', '"
+                   << escapeSql(objectName) << "', " << nodeId << ", '" << escapeSql(nodeName) << "')\n"
+                   << "ON CONFLICT (struct_id, object_id) DO UPDATE SET "
+                   << "object_tech = EXCLUDED.object_tech, object_name = EXCLUDED.object_name, "
+                   << "nodeid = EXCLUDED.nodeid, nodename = EXCLUDED.nodename;\n";
 
         } catch (const std::exception&) {
             std::cerr << "Предупреждение: Некорректные данные в строке " << r << ". Пропуск.\n";

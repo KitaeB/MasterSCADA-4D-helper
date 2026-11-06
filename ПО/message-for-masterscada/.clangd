@@ -1,0 +1,43 @@
+CompileFlags:
+  CompilationDatabase: "build"
+  Add: [-Wall, -Wextra, -Wpedantic, -Wconversion]
+
+Diagnostics:
+  ClangTidy:
+    Add:
+      - bugprone-*
+      - performance-*
+      - portability-*
+      - modernize-*
+      - cppcoreguidelines-*
+      - readability-*
+    Remove:
+      # Отключаем корпоративные стили и системный шум
+      - abseil-*
+      - google-*
+      - llvmlibc-*
+      - altera-*
+      # Отключаем педантичные проверки именования и оформления
+      - misc-include-cleaner
+      - readability-identifier-length
+      - modernize-use-trailing-return-type
+      - cppcoreguidelines-avoid-magic-numbers
+      - readability-magic-numbers
+      - cppcoreguidelines-macro-usage
+      - bugprone-easily-swappable-parameters # Не ругаться на (int a, int b)
+
+    CheckOptions:
+      HeaderFilterRegex: '.*(src|include)/.*'
+      bugprone-assert-side-effect.CheckFunctionCalls: true
+      # Позволяет перемещать объекты, которые дешево копируются
+      performance-move-const-arg.CheckTriviallyCopyableMove: false
+
+  UnusedIncludes: Strict
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes # Покажет имена параметров прямо в вызове функции
+  DeducedTypes: Yes    # Покажет тип там, где написано auto
+
+Hover:
+  ShowAKA: Yes

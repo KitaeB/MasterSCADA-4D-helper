@@ -1,7 +1,7 @@
 #include <OpenXLSX.hpp>
-#include <nlohmann/json.hpp>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
 #include <string>
 
 #ifdef _WIN32
@@ -46,7 +46,8 @@ int main(int argc, char* argv[]) {
 
         std::getline(std::cin, excelPath);
 
-        // -- Убираем кавычки, если пользователь перетащил файл прямо в окно терминала --
+        // -- Убираем кавычки, если пользователь перетащил файл прямо в окно
+        // терминала --
         if (excelPath.size() >= 2 && excelPath.front() == '"' && excelPath.back() == '"') {
             excelPath = excelPath.substr(1, excelPath.size() - 2);
         }
@@ -74,6 +75,10 @@ int main(int argc, char* argv[]) {
     // -- Чтение глобального имени узла (node_name) --
     std::string globalNodeName = config.value("node_name", "");
 
+    // -- Считываем наименование таблицы для объектов и сообщений --
+    std::string objectTableName = config.value("object_table", "object_table");
+    std::string messageTableName = config.value("message_table", "message_table");
+
     // -- Открытие Excel файла --
     OpenXLSX::XLDocument doc;
     try {
@@ -100,7 +105,7 @@ int main(int argc, char* argv[]) {
             std::string sheetName = objConfig.value("sheet", "");
             auto startRow = static_cast<uint32_t>(objConfig.value("start_row", objConfig.value("object_id", 1)));
             bool hasTech = objConfig.value("has_tech", true);
-            int structId = objConfig.value("struct_id", 0);
+            auto structId = objConfig.value("struct_id", 0);
 
             auto objectIdColumn = static_cast<uint32_t>(objConfig.value("object_id_column", 2));
             auto techNameColumn = static_cast<uint32_t>(objConfig.value("tech_name_column", 1));
@@ -117,8 +122,8 @@ int main(int argc, char* argv[]) {
             auto wks = doc.workbook().worksheet(sheetName);
 
             // Передаем globalNodeName в качестве аргумента fallback-значения
-            parseObjects(wks, startRow, globalNodeId, globalNodeName, structId, hasTech, objectIdColumn, techNameColumn,
-                         nameColumn, sqlOut);
+            parseObjects(wks, objectTableName, startRow, globalNodeId, globalNodeName, structId, hasTech,
+                         objectIdColumn, techNameColumn, nameColumn, sqlOut);
         }
     }
 
@@ -134,7 +139,7 @@ int main(int argc, char* argv[]) {
         } else {
             std::cout << "Парсинг листа сообщений: " << historSheet << "...\n";
             auto wks = doc.workbook().worksheet(historSheet);
-            parseMessages(wks, historRow, sqlOut);
+            parseMessages(wks, messageTableName, historRow, sqlOut);
         }
     }
 
