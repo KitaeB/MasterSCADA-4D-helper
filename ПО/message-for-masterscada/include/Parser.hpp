@@ -11,7 +11,7 @@
  * @param sqlOut Выходной поток для записи сформированного SQL.
  */
 void parseMessages(OpenXLSX::XLWorksheet& worksheet, const std::string& messageTableName, uint32_t startRow,
-                   std::ostream& sqlOut);
+                   uint8_t countArm, std::ostream& sqlOut);
 
 /**
  * @brief Парсит объекты из листа Excel и формирует SQL INSERT/UPDATE скрипт.

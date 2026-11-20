@@ -77,5 +77,6 @@
         }
     },
     "histor_sheet": "Histor",
-    "histor_row": 15
+    "histor_row": 15,
+    "count_arm": 7
 }

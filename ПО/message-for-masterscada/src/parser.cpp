@@ -2,10 +2,9 @@
 #include "Utils.hpp"
 
 void parseMessages(OpenXLSX::XLWorksheet& worksheet, const std::string& messageTableName, uint32_t startRow,
-                   std::ostream& sqlOut) {
+                   uint8_t countArm, std::ostream& sqlOut) {
     // -- Парсинг сообщений из Excel листа --
     int currentStructId = -1;
-    const int groupsCount = 4;  // Ограничение по количеству проверяемых колонок-групп
 
     for (uint32_t r = startRow; r <= worksheet.rowCount(); ++r) {
         auto cellA = worksheet.cell(r, 1);
@@ -19,7 +18,7 @@ void parseMessages(OpenXLSX::XLWorksheet& worksheet, const std::string& messageT
         }
 
         // -- Проход по группам сообщений (по 3 колонки на группу) --
-        for (int i = 0; i < groupsCount; ++i) {
+        for (int i = 0; i < countArm; ++i) {
             auto colMsgId = 3 + (i * 3);
             auto colPriority = 4 + (i * 3);
             auto colMsg = 5 + (i * 3);

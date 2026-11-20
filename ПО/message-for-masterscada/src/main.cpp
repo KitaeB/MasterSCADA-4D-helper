@@ -132,6 +132,7 @@ int main(int argc, char* argv[]) {
     if (!historSheet.empty()) {
         // -- Чтение строки начала сообщений --
         auto historRow = static_cast<uint32_t>(config.value("histor_row", 1));
+        auto countArm = static_cast<uint8_t>(config.value("count_arm", 1));
 
         // -- Проверка существования листа сообщений --
         if (!doc.workbook().worksheetExists(historSheet)) {
@@ -139,7 +140,7 @@ int main(int argc, char* argv[]) {
         } else {
             std::cout << "Парсинг листа сообщений: " << historSheet << "...\n";
             auto wks = doc.workbook().worksheet(historSheet);
-            parseMessages(wks, messageTableName, historRow, sqlOut);
+            parseMessages(wks, messageTableName, historRow, countArm, sqlOut);
         }
     }
 
