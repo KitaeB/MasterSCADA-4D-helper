@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(excel-to-sql VERSION 0.0.1 DESCRIPTION "")
+project(excel-to-sql VERSION 0.0.2 DESCRIPTION "")
 
 # Указываем CMake, что наши самописные модули лежат в папке /cmake
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
